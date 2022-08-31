@@ -26,9 +26,12 @@ def checkCheckboxes():
     else:
         if(sysInfo.get() == 1):
             print("Info")
-            cmd = "system_profiler -detailLevel full -xml > " + str(folderPath) + "/systemInformation.xml"
-            print(cmd)
-            #subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "system_profiler -detailLevel full -xml > " + str(folderPath) + "/systemInformation.xml"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("System Information Error")
         if(unifiedLogs.get() == 1):
             #sudo cmd
             #os.system("log collect -output ")
@@ -37,31 +40,76 @@ def checkCheckboxes():
             print("install")
         if (sysStartup.get() == 1):
             print("startup")
+            try:
+                cmd = "cp -rp /Library/StartupItems " + str(folderPath) + "/StartupItems/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+                cmd = "cp -rp /System/Library/StartupItems " + str(folderPath) + "/StartupItems/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Startup Items Error")
         if (diagReport.get() == 1):
             print("diag")
+            try:
+                cmd = "cp -rp /Library/Logs/DiagnositcReports " + str(folderPath) + "/DiagnosticReports/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Diagnositc Report Error")
         if (crashReport.get() == 1):
             print("crash")
+            try:
+                cmd = "cp -rp /Library/Application\ Support/CrashReporter/ " + str(folderPath) + "/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Crash Reporter Error")
         if (launchDaemon.get() == 1):
             print("daemon")
+            try:
+                cmd = "cp -rp /Library/LaunchDaemons/ " + str(folderPath) + "/LaunchDaemons/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+                cmd = "cp -rp /System/Library/LaunchDaemons/ " + str(folderPath) + "/LaunchDaemons/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Launch Daemons Error")
         if (launchAgent.get() == 1):
             print("agent")
+            try:
+                cmd = "cp -rp /Library/LaunchAgents/ " + str(folderPath) + "/LaunchAgents/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+                cmd = "cp -rp /System/Library/LaunchAgents/ " + str(folderPath) + "/LaunchAgents/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Launch Agents Error")
         if (sleepImage.get() == 1):
             print("sleep image")
         if (configPref.get() == 1):
             print("config")
         if (internetPlugins.get() == 1):
             print("plugins")
-            cmd = "cp -rp /Library/Internet\ Plug-Ins/ " + str(folderPath) + "/Internet\ Plug-Ins/"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "cp -rp /Library/Internet\ Plug-Ins/ " + str(folderPath) + "/Internet\ Plug-Ins/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Internet Plugins Error")
         if (keychainFiles.get() == 1):
             print("keychain")
-            cmd = "cp -rp /Library/Keychains " + str(folderPath) + "/Keychains/"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
-            #cmd = "cp -rp /System/Keychains " + str(folderPath) + "/Keychains/"
-            #print(cmd)
-            #subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "cp -rp /Library/Keychains " + str(folderPath) + "/Keychains/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+                cmd = "cp -rp /System/Keychains " + str(folderPath) + "/Keychains/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Keychain Files Error")
         if (recentDocs.get() == 1):
             print("recent docs")
         if (safariHist.get() == 1):
@@ -70,24 +118,36 @@ def checkCheckboxes():
             print("boot time")
         if (filesystemLogs.get() == 1):
             print("file logs")
-            cmd = "cp -p ~/Library/Logs/fsck_hfs.log " + str(folderPath) + "/fsck_hfs.log"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "cp -p ~/Library/Logs/fsck_hfs.log " + str(folderPath) + "/fsck_hfs.log"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("File System Logs Error")
         if (netInfo.get() == 1):
             print("netinfo")
-            cmd = "cp -p /private/var/log/daily.out " + str(folderPath) + "/daily.out"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "cp -p /private/var/log/daily.out " + str(folderPath) + "/daily.out"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Network Information Error")
         if (timezone.get() == 1):
             print("timezone")
-            cmd = "cp -p /Library/Preferences/.GlobalPreferences.plist " + str(folderPath) + "/GlobalPreferences.plist"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "cp -p /Library/Preferences/.GlobalPreferences.plist " + str(folderPath) + "/GlobalPreferences.plist"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Timezone Information Error")
         if (diskPartition.get() == 1):
             print("disk")
-            cmd = "diskutil list > " + str(folderPath) + "/diskutil.txt"
-            print(cmd)
-            subprocess.check_output(cmd, shell=True)
+            try:
+                cmd = "diskutil list > " + str(folderPath) + "/diskutil.txt"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Disk Partition Information Error")
 
         messagebox.showinfo("", "Done!")
         print("Done")
