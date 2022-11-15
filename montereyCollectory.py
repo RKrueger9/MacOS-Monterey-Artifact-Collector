@@ -7,7 +7,8 @@ import subprocess
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
-import os
+import pexpect
+import time
 
 
 
@@ -15,7 +16,7 @@ def browse_button():
     global folderPath
     filename = filedialog.askdirectory()
     folderPath = filename
-    Label(win, text=folderPath, bg='light gray').grid(row=1, column=3)
+    Label(win, text=folderPath, bg='light gray').grid(row=1, column=2)
     print("browse button: " + folderPath)
 
 def checkCheckboxes():
@@ -36,8 +37,26 @@ def checkCheckboxes():
             #sudo cmd
             #os.system("log collect -output ")
             print("unified")
+            try:
+                if (adminPassword.get() != ""):
+                    cmd = "mkdir " + str(folderPath) + "/UnifiedLogs/"
+                    print(cmd)
+                    subprocess.check_output(cmd, shell=True)
+                    child = pexpect.spawn("sudo log collect --output " + str(folderPath) + "/UnifiedLogs")
+                    child.expect('Password:')
+                    # enter the password
+                    child.sendline(adminPassword.get())
+                    print(child.read().decode())
+            except:
+                print("Sleep Image Error")
         if (installHist.get() == 1):
             print("install")
+            try:
+                cmd = "cp -rp /Library/Receipts/InstallHistory.plist " + str(folderPath) + "/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Install History Error")
         if (sysStartup.get() == 1):
             print("startup")
             try:
@@ -52,15 +71,15 @@ def checkCheckboxes():
         if (diagReport.get() == 1):
             print("diag")
             try:
-                cmd = "cp -rp /Library/Logs/DiagnositcReports " + str(folderPath) + "/DiagnosticReports/"
+                cmd = "cp -rp /Library/Logs/DiagnosticReports " + str(folderPath) + "/DiagnosticReports/"
                 print(cmd)
                 subprocess.check_output(cmd, shell=True)
             except:
-                print("Diagnositc Report Error")
+                print("Diagnostic Reports Error")
         if (crashReport.get() == 1):
             print("crash")
             try:
-                cmd = "cp -rp /Library/Application\ Support/CrashReporter/ " + str(folderPath) + "/"
+                cmd = "cp -rp /Library/Application\ Support/CrashReporter/ " + str(folderPath) + "/CrashReporter/"
                 print(cmd)
                 subprocess.check_output(cmd, shell=True)
             except:
@@ -89,8 +108,29 @@ def checkCheckboxes():
                 print("Launch Agents Error")
         if (sleepImage.get() == 1):
             print("sleep image")
+            try:
+                if (adminPassword.get() != ""):
+                    child = pexpect.spawn("sudo cp -rp /private/var/vm/sleepimage " + str(folderPath) + "/sleepimage")
+                    child.expect('Password:')
+                    # enter the password
+                    child.sendline(adminPassword.get())
+                    print(child.read().decode())
+            except:
+                print("Sleep Image Error")
         if (configPref.get() == 1):
-            print("config")
+            print("system config")
+            print("admin Password: " + str(adminPassword.get()) + " end")
+            try:
+                if(adminPassword.get() != ""):
+                    child = pexpect.spawn("sudo cp -rp /Library/Preferences/SystemConfiguration/ " + str(folderPath) + "/System\ Configuration" )
+                    print("pass 1")
+                    child.expect('Password:')
+                    print("pass 2")
+                    # enter the password
+                    child.sendline(adminPassword.get())
+                    print(child.read().decode())
+            except:
+                print("system config Error")
         if (internetPlugins.get() == 1):
             print("plugins")
             try:
@@ -112,10 +152,31 @@ def checkCheckboxes():
                 print("Keychain Files Error")
         if (recentDocs.get() == 1):
             print("recent docs")
+            try:
+                cmd = "cp -rp /Library/Preferences/com.apple.recentitems.plist " + str(folderPath) + "/Recent\ Documents/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Recent Documents Error")
         if (safariHist.get() == 1):
             print("safari hist")
+            try:
+                cmd = "cp -rp /Library/Safari/History.plist " + str(folderPath) + "/Safari/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+                cmd = "cp -rp /System/Library/StartupItems " + str(folderPath) + "/StartupItems/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Startup Items Error")
         if (bootupTime.get() == 1):
             print("boot time")
+            try:
+                cmd = "cp -rp /private/var/log/System.log (find 'BOOT_Time') " + str(folderPath) + "/Bootup \Time/"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Bootup Time Error")
         if (filesystemLogs.get() == 1):
             print("file logs")
             try:
@@ -148,6 +209,14 @@ def checkCheckboxes():
                 subprocess.check_output(cmd, shell=True)
             except:
                 print("Disk Partition Information Error")
+        if (firewallLogs.get() == 1):
+            print("firewall")
+            try:
+                cmd = "cp -p /private/var/log/appfirewall.log " + str(folderPath) + "/appfirewall.log"
+                print(cmd)
+                subprocess.check_output(cmd, shell=True)
+            except:
+                print("Firewall Log Error")
 
         messagebox.showinfo("", "Done!")
         print("Done")
@@ -160,9 +229,10 @@ def main():
     win.configure(bg='light gray')
 
 
-
-    Label(win, text='Enter Administrator Password', bg='light gray').grid(row=0)
-    Entry(win).grid(row=0, column=1)
+    global adminPassword
+    adminPassword = StringVar()
+    Label(win, text='Enter Administrator Password', bg='light gray').grid(row=0, column=0)
+    Entry(win, textvariable=adminPassword, show="*").grid(row=0, column=1)
 
     global folderPath
     folderPath = ""
@@ -189,6 +259,7 @@ def main():
     global netInfo
     global timezone
     global diskPartition
+    global firewallLogs
 
 
     #checkmarks for artifacts to find
@@ -230,6 +301,8 @@ def main():
     Checkbutton(win, text='Timezone', variable=timezone, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=9, column=2, sticky=W)
     diskPartition = IntVar()
     Checkbutton(win, text='Disk Partition Info', variable=diskPartition, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=10, column=0, sticky=W)
+    firewallLogs = IntVar()
+    Checkbutton(win, text='Firewall', variable=firewallLogs, onvalue=1, offvalue=0, height=5, width=20,bg='light gray').grid(row=10, column=1, sticky=W)
 
     #done button
     Button(text="Start", command=checkCheckboxes, bg='light gray').grid(row=10, column=2)
