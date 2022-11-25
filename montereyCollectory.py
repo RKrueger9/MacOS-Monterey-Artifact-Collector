@@ -21,6 +21,8 @@ def browse_button():
 
 def checkCheckboxes():
     global folderPath
+    startTime = time.time()
+
     print("checkBoxes: " + folderPath)
     if(folderPath == ""):
         print("Need output location")
@@ -218,7 +220,9 @@ def checkCheckboxes():
             except:
                 print("Firewall Log Error")
 
-        messagebox.showinfo("", "Done!")
+        endTime = time.time()
+        timeSpent = endTime - startTime
+        messagebox.showinfo("", "Done! \n" +  str(round(timeSpent, 2)) + " seconds")
         print("Done")
 
 def main():
@@ -238,6 +242,7 @@ def main():
     folderPath = ""
     Label(win, text='Select Output Location', bg='light gray').grid(row=1, column=0)
     Button(text="Browse", command=browse_button, bg='light gray').grid(row=1, column=1)
+
 
 
     global sysInfo
@@ -265,26 +270,26 @@ def main():
     #checkmarks for artifacts to find
     sysInfo = IntVar()
     Checkbutton(win, text='System Info', variable=sysInfo,onvalue=1,offvalue=0,height=5,width=20, bg='light gray').grid(row=4, column = 0, sticky=W)
-    unifiedLogs = IntVar()
-    Checkbutton(win, text='Unified Logs', variable=unifiedLogs,onvalue=1,offvalue=0,height=5,width=20, bg='light gray').grid(row=4,column = 1, sticky=W)
     installHist = IntVar()
-    Checkbutton(win, text='Installation History', variable=installHist,onvalue=1,offvalue=0,height=5,width=20, bg='light gray').grid(row=4, column = 2, sticky=W)
+    Checkbutton(win, text='Installation History', variable=installHist,onvalue=1,offvalue=0,height=5,width=20, bg='light gray').grid(row=4, column = 1, sticky=W)
     sysStartup = IntVar()
-    Checkbutton(win, text='System Startup Items', variable=sysStartup, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=5, column=0, sticky=W)
-    diagReport = IntVar()
-    Checkbutton(win, text='Diagnostic Report', variable=diagReport, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=5, column=1, sticky=W)
-    crashReport = IntVar()
-    Checkbutton(win, text='Crash Reporter', variable=crashReport, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=5, column=2, sticky=W)
-    launchDaemon = IntVar()
-    Checkbutton(win, text='Launch Daemons', variable=launchDaemon, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=0, sticky=W)
-    launchAgent = IntVar()
-    Checkbutton(win, text='Launch Agents', variable=launchAgent, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=1, sticky=W)
+    Checkbutton(win, text='System Startup Items', variable=sysStartup, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=4, column=2, sticky=W)
+    unifiedLogs = IntVar()
+    Checkbutton(win, text='Unified Logs', variable=unifiedLogs, onvalue=1, offvalue=0, height=5, width=20, bg='yellow').grid(row=5, column=0, sticky=W)
     sleepImage = IntVar()
-    Checkbutton(win, text='Sleep Image', variable=sleepImage, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=2, sticky=W)
+    Checkbutton(win, text='Sleep Image', variable=sleepImage, onvalue=1, offvalue=0, height=5, width=20, bg='yellow').grid(row=5, column=1, sticky=W)
     configPref = IntVar()
-    Checkbutton(win, text='Configuration Preferences', variable=configPref, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=7, column=0, sticky=W)
+    Checkbutton(win, text='Configuration Preferences', variable=configPref, onvalue=1, offvalue=0, height=5, width=20, bg='yellow').grid(row=5, column=2, sticky=W)
+    diagReport = IntVar()
+    Checkbutton(win, text='Diagnostic Report', variable=diagReport, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=0, sticky=W)
+    crashReport = IntVar()
+    Checkbutton(win, text='Crash Reporter', variable=crashReport, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=1, sticky=W)
     internetPlugins = IntVar()
-    Checkbutton(win, text='Internet Plugins', variable=internetPlugins, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=7, column=1, sticky=W)
+    Checkbutton(win, text='Internet Plugins', variable=internetPlugins, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=6, column=2, sticky=W)
+    launchDaemon = IntVar()
+    Checkbutton(win, text='Launch Daemons', variable=launchDaemon, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=7, column=0, sticky=W)
+    launchAgent = IntVar()
+    Checkbutton(win, text='Launch Agents', variable=launchAgent, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=7, column=1, sticky=W)
     keychainFiles = IntVar()
     Checkbutton(win, text='Keychain Files', variable=keychainFiles, onvalue=1, offvalue=0, height=5, width=20, bg='light gray').grid(row=7, column=2, sticky=W)
     recentDocs = IntVar()
@@ -307,8 +312,15 @@ def main():
     #done button
     Button(text="Start", command=checkCheckboxes, bg='light gray').grid(row=10, column=2)
 
+    # displays message explaining application
+    messagebox.showinfo("", "This application does not require the administrator password for the system. "
+                               "However, Unified Logs, Sleep Image, and System Configurations will not be collected. "
+                               "These options are highlighted in yellow.")
+
     print(folderPath)
     win.mainloop() #running the loop that works as a trigger
+
+
 
 
 
